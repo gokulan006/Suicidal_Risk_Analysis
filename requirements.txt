@@ -16,5 +16,4 @@ vaderSentiment
 spacy
 geopy
 folium
-sqlalchemy
 
