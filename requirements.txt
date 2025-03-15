@@ -9,3 +9,13 @@ gunicorn
 psycopg2-binary   
 requests   
 praw
+nltk
+pickle
+numpy
+tensorflow
+vaderSentiment
+spacy
+geopy
+folium
+sqlalchemy
+
