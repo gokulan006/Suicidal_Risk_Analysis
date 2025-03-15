@@ -10,7 +10,6 @@ psycopg2-binary
 requests   
 praw
 nltk
-pickle
 numpy
 tensorflow
 vaderSentiment
