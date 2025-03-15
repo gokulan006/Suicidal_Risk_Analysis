@@ -1,0 +1,10 @@
+Flask
+dash
+pandas
+plotly
+SQLAlchemy
+flask_sqlalchemy
+APScheduler
+gunicorn
+psycopg2-binary   
+requests   
