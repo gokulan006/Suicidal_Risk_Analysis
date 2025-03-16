@@ -24,4 +24,4 @@ COPY . .
 EXPOSE 8000
 
 # Command to run the application
-CMD ["gunicorn", "--preload", "--workers=2", "--threads=1", "--bind", "0.0.0.0:8000", "app:server"]
+CMD ["gunicorn", "--workers=1", "--threads=1", "--timeout=120", "--preload", "--bind", "0.0.0.0:8000", "app:server"]
