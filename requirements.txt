@@ -6,11 +6,11 @@ SQLAlchemy
 flask_sqlalchemy
 APScheduler
 gunicorn
-psycopg2-binary   
-requests   
+psycopg2-binary
+requests
 praw
 nltk
-numpy
+numpy==1.23.5  
 tensorflow
 vaderSentiment
 spacy
