@@ -1,2 +1,2 @@
-[pkgs]
-pkgs = ["gcc", "postgresql_16", "python39"]
+[start]
+cmd="gunicorn app:app"
