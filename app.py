@@ -96,7 +96,7 @@ country_mapping = {
 }
 
 # Function to extract posts
-def extract_reddit_posts(limit=300):
+def extract_reddit_posts(limit=50):
     posts_data = []
 
     try:
