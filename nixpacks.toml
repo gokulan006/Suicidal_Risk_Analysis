@@ -1,0 +1,2 @@
+[pkgs]
+pkgs = ["gcc", "postgresql_16", "python39"]
