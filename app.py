@@ -17,32 +17,7 @@ import folium
 from folium.plugins import HeatMap
 from sqlalchemy import create_engine
 from dash_app import create_dashboard
-import torch
-from sentence_transformers import SentenceTransformer, util
-
-# Load pre-trained BERT model
-bert_model = SentenceTransformer("paraphrase-MiniLM-L6-v2")
-high_risk_keywords = [
-    "suicide", "hopeless", "self-harm", "die", "kill", "worthless", "end it", "pain", "depressed",
-    "overdose", "no future", "give up", "alone", "empty", "dark", "nothing matters", "can't go on",
-    "useless", "suffering", "painless death"
-]
-
-moderate_risk_keywords = [
-    "sad", "anxious", "stress", "struggling", "breakdown", "crying", "overwhelmed", "tired",
-    "panic", "fear", "low", "nobody cares", "helpless", "isolated", "insecure"
-]
-
-low_risk_keywords = [
-    "mental health", "therapy", "healing", "self-care", "meditation", "help", "wellness",
-    "recovery", "coping", "mindfulness", "support", "stay strong", "hope"
-]
-
-# Compute embeddings for each category
-high_risk_embeds = bert_model.encode(high_risk_keywords, convert_to_tensor=True)
-moderate_risk_embeds = bert_model.encode(moderate_risk_keywords, convert_to_tensor=True)
-low_risk_embeds = bert_model.encode(low_risk_keywords, convert_to_tensor=True)
-
+ 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'reddit_posts.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -172,31 +147,18 @@ def sentiment_scores(sentence):
         return "Negative"
     else:
         return "Neutral"
-def classify_risk_level(user_text):
-    """Classifies risk level using BERT keyword similarity."""
-    user_embedding = bert_model.encode(user_text, convert_to_tensor=True)
-
-    # Compute max similarity scores with risk keyword embeddings
-    high_risk_score = torch.max(util.cos_sim(user_embedding, high_risk_embeds)).item()
-    moderate_risk_score = torch.max(util.cos_sim(user_embedding, moderate_risk_embeds)).item()
-    low_risk_score = torch.max(util.cos_sim(user_embedding, low_risk_embeds)).item()
-
-    # Determine highest similarity
-    scores = {
-        "High-Risk": high_risk_score,
-        "Moderate Concern": moderate_risk_score,
-        "Low Concern": low_risk_score
-    }
 
 
-    return max(scores, key=scores.get)
+
+
+     
 # Function to predict risk level
-# def predict_text(text):
-#     sequences = tokenizer.texts_to_sequences([text])
-#     padded_sequences = keras.preprocessing.sequence.pad_sequences(sequences, maxlen=128)
-#     prediction = model.predict(padded_sequences)
-#     predicted_class = np.argmax(prediction, axis=-1)[0]
-#     return risk_labels[predicted_class]
+def predict_text(text):
+    sequences = tokenizer.texts_to_sequences([text])
+    padded_sequences = keras.preprocessing.sequence.pad_sequences(sequences, maxlen=128)
+    prediction = model.predict(padded_sequences)
+    predicted_class = np.argmax(prediction, axis=-1)[0]
+    return risk_labels[predicted_class]
 
 # Function to extract location
 def extract_location(text):
@@ -298,7 +260,7 @@ def analyze_posts():
 
     df = df.dropna()
     df["Sentiment"] = df["Cleaned Content"].apply(sentiment_scores)
-    df["Risk Level"] = df["Cleaned Content"].apply(classify_risk_level)
+    df["Risk Level"] = df["Cleaned Content"].apply(predict_text)
     store_df_in_sql(df)
 
     return jsonify({"message": "Data stored in SQL successfully!", "rows": len(df)})
