@@ -1,6 +1,7 @@
-runtime: python39
-entrypoint: gunicorn -b :$PORT app:app
-
-handlers:
-  - url: /.*
-    script: auto
+version: 1.0
+runtime: python3
+build:
+  commands:
+    - pip install -r requirements.txt
+run:
+  command: gunicorn app:app --bind 0.0.0.0:8080
